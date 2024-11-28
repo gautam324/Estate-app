@@ -40,3 +40,5 @@ const Navbar = ({containerStyles}) => {
     </nav>
   )
 }
+
+export default Navbar;
