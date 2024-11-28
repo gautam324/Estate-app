@@ -31,7 +31,7 @@ const Navbar = ({containerStyles}) => {
       </NavLink>
 
       <NavLink
-        to='/'
+        to='/addproperty'
         className={ 'flexCenter gap-x-1 rounded-full px-2 py-1 cursor-pointer'}
       >
         <MdAddHome />
