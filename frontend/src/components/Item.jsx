@@ -2,6 +2,7 @@ import React from 'react'
 import HeartBtn from './HeartBtn'
 import { MdOutlineBed, MdOutlineBathtub, MdOutlineGarage } from 'react-icons/md'
 import { Link } from 'react-router-dom'
+import { CgRuler } from 'react-icons/cg'
 
 const Item = ({ property }) => {
   // Add a check to ensure 'property' exists
