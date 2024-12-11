@@ -11,30 +11,33 @@ import Layout from './components/Layout'
 import { QueryClient, QueryClientProvider } from 'react-query' // v3
 import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
-import { ReactQueryDevtools } from 'react-query/devtools' // No es necesario instalar nada con la v3
-
-
-
-
+import { ReactQueryDevtools } from 'react-query/devtools' 
+import Property from './pages/Property'
 
 export default function App() {
     const queryClient = new QueryClient();
   return (
-    <BrowserRouter>
-
-    <Suspense fallback={<div>Loading data ...</div>}>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+      <Suspense fallback={<div>Loading data ...</div>}>
       
         <Routes>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />}/>
-            <Route path="/listing" element={<Listing />} />
+            <Route path="/listing"  >
+                <Route index element={<Listing />} />
+                <Route path=":propertyId" element={<Property />} />
+            </Route>
             <Route path="/addproperty" element={<AddProperty />} />
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/bookings" element={<Bookings />} />
           </Route>
         </Routes>
             
-    </Suspense>
-    </BrowserRouter>
+        </Suspense>
+      </BrowserRouter>
+      <ToastContainer />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
