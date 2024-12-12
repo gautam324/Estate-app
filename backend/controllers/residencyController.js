@@ -1,43 +1,45 @@
-import asyncHandler from 'express-async-handler'
-import { prisma } from '../config/prismaConfig.js'
-export const createResdidency = asyncHandler(async(req, res) => {
-  
-  const { 
-    title, 
-    description, 
-    price, 
-    address, 
-    country, 
-    city, 
-    facilities, 
-    image, 
-    userEmail 
-  } = req.body.data
+import asyncHandler from 'express-async-handler';
+import { prisma } from '../config/prismaConfig.js';
+
+export const createResdidency = asyncHandler(async (req, res) => {
+  const {
+    title,
+    description,
+    price,
+    address,
+    country,
+    city,
+    facilities,
+    image,
+    userEmail,
+  } = req.body; // Changed from req.body.data to req.body
+
   try {
     const residency = await prisma.residency.create({
       data: {
-        title, 
-        description, 
-        price, 
-        address, 
-        country, 
-        city, 
-        facilities, 
-        image, 
-        owner: {connect: {email: userEmail}}
-      }
+        title,
+        description,
+        price,
+        address,
+        country,
+        city,
+        facilities,
+        image,
+        owner: { connect: { email: userEmail } },
+      },
     });
     res.send({
-      message: "Residency created successfully",
-      residency
-    })
+      message: 'Residency created successfully',
+      residency,
+    });
   } catch (err) {
-    if(err.code === "P2002"){
-      throw new Error("A residendy with address already there")
+    if (err.code === 'P2002') {
+      throw new Error('A residency with this address already exists');
     }
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-})
+});
+
 
 
 export const getAllResidencies = asyncHandler(async(req, res) => {

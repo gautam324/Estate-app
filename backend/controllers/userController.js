@@ -30,18 +30,18 @@ export const bookVisit = asyncHandler(async(req, res) => {
 
   try {
 
-    const allreadyBooked = await prisma.user.findUnique({ // Se busca el usuario con el email propocionado y sus visitas programadas
+    const allreadyBooked = await prisma.user.findUnique({ 
       where: { email },
       select: { bookedVisits: true }
     });
 
-    if(allreadyBooked.bookedVisits.some((visit) => visit.id === id)){ // Si en sus visitas programadas hay alguna cuyo id coincida con el del argumento
+    if(allreadyBooked.bookedVisits.some((visit) => visit.id === id)){ 
       res.status(400).json({
-        message: "This residency already booked bu you"               // mensaje de que ya estaba programada (booked)
+        message: "This residency already booked bu you"             
       })
     }else{
-      await prisma.user.update({                                      // Si en sus visitas programadas no hay ninguna que coincida con el id del argumento
-        where: { email },                                             // se procede a actualizar el campo bookedVisits del usuario con dicho id
+      await prisma.user.update({                                    
+        where: { email },                                             
         data: {
           bookedVisits: { push: {id, date}}
         }
@@ -78,25 +78,25 @@ export const allBookings = asyncHandler(async(req, res) => {
 // To cancel a booking
 export const cancelBooking = asyncHandler(async(req, res) => {
 
-  const { email } = req.body; // email del usuario que quiere visitar
-  const { id } = req.params;  // id de la residencia a visitar
+  const { email } = req.body;
+  const { id } = req.params;  
 
   try {
 
-    const user = await prisma.user.findUnique({                             // Se busca el usuario según el email
+    const user = await prisma.user.findUnique({                             
       where: { email },
-      select: { bookedVisits: true }                                        // mostrando el objeto bookedVisits
+      select: { bookedVisits: true }                                        
     });
 
-    const index = user.bookedVisits.findIndex((visit) => visit.id === id)   // Se busca el índice dentro de user.bookedVisits correspondiente al id de los params
+    const index = user.bookedVisits.findIndex((visit) => visit.id === id)   
 
-    if (index === -1) {                                                     // Si index = -1 
-      res.status(404).json({ message: "Booking not found" })                // no se encontró ninguna visita con el id especificado en user.bookedVisits.
-    }else{                                                                  // Si index != 1
-      user.bookedVisits.splice(index, 1);                                   // elimina el elemento en user.bookedVisits en la posición index usando splice
-      await prisma.user.update({                                            // Se actualiza el usuario según email
+    if (index === -1) {                                                   
+      res.status(404).json({ message: "Booking not found" })                
+    }else{                                                                  
+      user.bookedVisits.splice(index, 1);                                 
+      await prisma.user.update({                                          
         where: {email},
-        data: {                                                             // con el nuevo contenido de bookedVisits
+        data: {                                                            
           bookedVisits: user.bookedVisits
         }
       })
@@ -112,28 +112,28 @@ export const cancelBooking = asyncHandler(async(req, res) => {
 // To add a residency in favorites list of a user
 export const toFav = asyncHandler(async(req, res) => {
 
-  const {email} = req.body; // Email del usuario
-  const {rid} = req.params; // id de la residencia que se quiere añadir a favoritos  
+  const {email} = req.body; 
+  const {rid} = req.params;  
 
   try {
-    const user = await prisma.user.findUnique({ // Se busca el usuario según email
+    const user = await prisma.user.findUnique({ 
       where: {email}
     });
 
-    if (user.favResidenciesID.includes(rid)){            // Si en las residencias favoritas del usuario está incluida la que se quiere añadir
-      const updatedUser = await prisma.user.update({     // se actualiza el user.favResidenciesID eliminando el rid ( Pulsar en una existente -> borrarla) 
+    if (user.favResidenciesID.includes(rid)){            
+      const updatedUser = await prisma.user.update({     
         where: {email},
         data: {
           favResidenciesID: {
-            set: user.favResidenciesID.filter( (id) => id !== rid )  // Solo se deján los ids distintos del rid
+            set: user.favResidenciesID.filter( (id) => id !== rid ) 
           }
         }
       })
 
       res.send({message: "Removed from favourites", user: updatedUser})
 
-    }else{                                              // Si por el contrario en las residendicas favoritas del usuario no esta incluida la que se quiere añadir
-      const updatedUser = await prisma.user.update({    // se actualiza el user.favResidenciesID añadiendo el rid (pulsar en una inexistente -> añadirla)
+    }else{                                             
+      const updatedUser = await prisma.user.update({    
         where: {email},
         data: {
           favResidenciesID: {
