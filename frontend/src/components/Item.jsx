@@ -6,16 +6,30 @@ import { CgRuler } from 'react-icons/cg'
 
 const Item = ({ property }) => {
   const navigate = useNavigate()
+
+  // Ensure property and necessary fields are defined
+  if (!property) return <div>Loading...</div> // Fallback UI if property is not available
+
+  const {
+    id,
+    image,
+    title,
+    city,
+    facilities = { bedrooms: 0, bathrooms: 0, parkings: 0 },
+    description,
+    price,
+  } = property;
+
   return (
     <div 
       className="rounded-2xl p-5 bg-white" 
-      onClick={() => navigate(`../listing/${property.id}`)}
+      onClick={() => navigate(`../listing/${id}`)}
     >
 
       <div className="pb-2 relative">
         <img 
-          src={property.image} 
-          alt={property.title} 
+          src={image} 
+          alt={title} 
           className="rounded-xl"
         />
         {/* like btn */}
@@ -24,19 +38,19 @@ const Item = ({ property }) => {
         </div>
       </div>
 
-      <h5 className="bold-16 my-1 text-secondary">{property.city}</h5>
-      <h4 className="medium-18 line-clamp-1">{property.title}</h4>
+      <h5 className="bold-16 my-1 text-secondary">{city}</h5>
+      <h4 className="medium-18 line-clamp-1">{title}</h4>
 
       {/* info */}
       <div className="flex gap-x-2 py-2">
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineBed />{ property.facilities.bedrooms }
+          <MdOutlineBed />{facilities.bedrooms}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineBathtub />{property.facilities.bathrooms}
+          <MdOutlineBathtub />{facilities.bathrooms}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineGarage />{property.facilities.parkings}
+          <MdOutlineGarage />{facilities.parkings}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
           <CgRuler /> 400
@@ -44,14 +58,14 @@ const Item = ({ property }) => {
       </div>
 
       <p className="pt-2 mb-4 line-clamp-2">
-        {property.description}
+        {description}
       </p>
 
       <div className="flexBetween">
         <div className="bold-20">
-          ${property.price}.00
+          ${price}.00
         </div>
-        <Link to={`/listing/${property.id}`}>
+        <Link to={`/listing/${id}`}>
           <button className="btn-secondary rounded-xl !py-[7px] !px-4 shadow-sm">
             View Details
           </button>
@@ -60,6 +74,5 @@ const Item = ({ property }) => {
     </div>
   )
 }
-
 
 export default Item;
