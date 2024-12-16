@@ -30,16 +30,27 @@ export const bookVisit = asyncHandler(async(req, res) => {
 
   try {
 
-    const allreadyBooked = await prisma.user.findUnique({ 
+    console.log(`Received request to book visit for email: ${email}, date: ${date}, propertyId: ${id}`);
+    const allreadyBooked = await prisma.user.findUnique({
       where: { email },
       select: { bookedVisits: true }
     });
 
+
+    if (!allreadyBooked) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+    console.log(`User's booked visits: ${JSON.stringify(allreadyBooked.bookedVisits)}`);
+
     if(allreadyBooked.bookedVisits.some((visit) => visit.id === id)){ 
-      res.status(400).json({
-        message: "This residency already booked bu you"             
+      console.log('The visit is already booked by this user.');
+      return res.status(400).json({
+        message: "This residency already booked by you"             
       })
     }else{
+      console.log('Booking a new visit.');
       await prisma.user.update({                                    
         where: { email },                                             
         data: {
@@ -48,9 +59,10 @@ export const bookVisit = asyncHandler(async(req, res) => {
       })
     }
 
-    res.send("Your visit is booked succesfully");
+    return res.send("Your visit is booked succesfully");
 
   } catch (err) {
+    console.error(`Error booking visit: ${err.message}`);
     throw new Error(err.message)
   }
 });

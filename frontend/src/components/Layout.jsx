@@ -9,7 +9,7 @@ import { createUser } from '../utils/api'
 
 const Layout = () => {
   const { isAuthenticated, user, getAccessTokenWithPopup } = useAuth0(); 
-  const { setUserDetails } = useContext(UserDetailContext);              
+  const { userDetails, setUserDetails } = useContext(UserDetailContext);             
   const { mutate } = useMutation({                                       
     mutationKey: [user?.email],
     mutationFn: (token) => createUser(user?.email, token)
