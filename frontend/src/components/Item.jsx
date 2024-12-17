@@ -1,40 +1,35 @@
-import React from 'react'
-import HeartBtn from './HeartBtn'
-import { MdOutlineBed, MdOutlineBathtub, MdOutlineGarage } from 'react-icons/md'
-import { Link, useNavigate } from 'react-router-dom'
-import { CgRuler } from 'react-icons/cg'
+import React from 'react';
+import HeartBtn from './HeartBtn';
+import { MdOutlineBed, MdOutlineBathtub, MdOutlineGarage } from 'react-icons/md';
+import { CgRuler } from 'react-icons/cg';
+import { useNavigate } from 'react-router-dom';
 
 const Item = ({ property }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  // Ensure property and necessary fields are defined
-  if (!property) return <div>Loading...</div> // Fallback UI if property is not available
+  // Ensure that property is being passed correctly
+  if (!property) {
+    return <div>Loading...</div>;
+  }
 
-  const {
-    id,
-    image,
-    title,
-    city,
-    facilities = { bedrooms: 0, bathrooms: 0, parkings: 0 },
-    description,
-    price,
-  } = property;
-
+  const { image, title, city, facilities, size, description, price, id } = property;
+  
   return (
-    <div 
-      className="rounded-2xl p-5 bg-white" 
-      onClick={() => navigate(`../listing/${id}`)}
+    <div
+      className="rounded-2xl p-5 bg-white"
+      onClick={() => navigate(`/listing/${id}`)} // Using navigate for onClick
+      role="button" // Accessibility improvement for the clickable div
+      aria-label={`View details of ${title}`} // Adding accessibility to the clickable div
     >
-
       <div className="pb-2 relative">
         <img 
           src={image} 
-          alt={title} 
+          alt={title || 'Property Image'} // Ensuring alt text is available
           className="rounded-xl"
         />
-        {/* like btn */}
+        {/* like button */}
         <div className="absolute top-4 right-6">
-          <HeartBtn />
+          <HeartBtn id={id} />
         </div>
       </div>
 
@@ -44,35 +39,37 @@ const Item = ({ property }) => {
       {/* info */}
       <div className="flex gap-x-2 py-2">
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineBed />{facilities.bedrooms}
+          <MdOutlineBed />{facilities?.bedrooms ?? 'N/A'}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineBathtub />{facilities.bathrooms}
+          <MdOutlineBathtub />{facilities?.bathrooms ?? 'N/A'}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <MdOutlineGarage />{facilities.parkings}
+          <MdOutlineGarage />{facilities?.parkings ?? 'N/A'}
         </div>
         <div className="flexCenter gap-x-2 border-r border-slate-900/50 pr-4 font-[500]">
-          <CgRuler /> 400
+          <CgRuler />{size ?? 'N/A'}
         </div>
       </div>
 
       <p className="pt-2 mb-4 line-clamp-2">
-        {description}
+        {description || 'No description available'} {/* Fallback for missing description */}
       </p>
 
       <div className="flexBetween">
         <div className="bold-20">
           ${price}.00
         </div>
-        <Link to={`/listing/${id}`}>
-          <button className="btn-secondary rounded-xl !py-[7px] !px-4 shadow-sm">
-            View Details
-          </button>
-        </Link>
+        <button
+          className="btn-secondary rounded-xl !py-[7px] !px-4 shadow-sm"
+          onClick={() => navigate(`/listing/${id}`)} // Navigate on button click
+          aria-label={`View details of ${title}`} // Accessibility improvement for the button
+        >
+          View Details
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Item;

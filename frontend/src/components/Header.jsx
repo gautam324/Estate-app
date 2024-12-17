@@ -30,7 +30,7 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll)
     }
   }, [menuOpened]);
-  
+
   return (
     <header className='max-padd-container fixed top-1 w-full left-0 right-0 z-50'>
       {/* container */}
@@ -86,7 +86,6 @@ const Header = () => {
       </div>
     </header>
   )
-
 }
 
 export default Header
